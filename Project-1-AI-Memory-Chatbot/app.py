@@ -12,194 +12,143 @@ st.set_page_config(
 
 
 # ---------- CUSTOM CSS ----------
-st.markdown(
-    """
-    <style>
+st.markdown("""
+<style>
 
-    .stApp {
-        background-color: #F5EBDD;
-        color: #10233F;
-    }
+.stApp {
+    background-color: #F5EBDD;
+    color: #10233F;
+}
 
-    [data-testid="stSidebar"] {
-        background-color: #0B1F3A;
-    }
+[data-testid="stSidebar"] {
+    background-color: #0B1F3A;
+}
 
-    [data-testid="stSidebar"] * {
-        color: #F5EBDD;
-    }
+[data-testid="stSidebar"] * {
+    color: #F5EBDD;
+}
 
-    .title {
-        font-size: 40px;
-        font-weight: bold;
-        color: #0B1F3A;
-    }
+.title {
+    font-size:40px;
+    font-weight:bold;
+    color:#0B1F3A;
+}
 
-    .subtitle {
-        font-size:18px;
-        color:#5B4A3A;
-    }
+.subtitle{
+    font-size:18px;
+    color:#5B4A3A;
+}
 
+.user-msg{
+    background:#0B1F3A;
+    color:white;
+    padding:15px;
+    border-radius:18px;
+    margin:10px;
+}
 
-    .user-msg {
-        background:#0B1F3A;
-        color:white;
-        padding:15px;
-        border-radius:18px;
-        margin:10px;
-    }
+.bot-msg{
+    background:#E8D3B3;
+    color:#0B1F3A;
+    padding:15px;
+    border-radius:18px;
+    margin:10px;
+}
 
-
-    .bot-msg {
-        background:#E8D3B3;
-        color:#0B1F3A;
-        padding:15px;
-        border-radius:18px;
-        margin:10px;
-    }
-
-
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
+</style>
+""", unsafe_allow_html=True)
 
 
 # ---------- SIDEBAR ----------
 
 with st.sidebar:
 
-    st.markdown(
-        """
-        <h1>🤖</h1>
-        <h2>AI Memory<br>Chatbot</h2>
+    st.markdown("""
+    <h1>🤖</h1>
+    <h2>AI Memory<br>Chatbot</h2>
 
-        <p>
-        I remember conversations
-        and learn from your chats.
-        </p>
+    <p>
+    I remember conversations and learn from your chats.
+    </p>
 
-        ---
-        """,
-        unsafe_allow_html=True
-    )
-
+    <hr>
+    """, unsafe_allow_html=True)
 
     if st.button("🗑 Clear Chat"):
-
         save_memory([])
+        st.success("Conversation memory cleared.")
         st.rerun()
-
 
     memory = get_memory()
 
     st.markdown("### 📊 Stats")
-
-    st.write(
-        f"💬 Messages: {len(memory)}"
-    )
-
-    st.write(
-        "🧠 Memory Enabled"
-    )
-
-    st.write(
-        "⚡ Powered by Gemini"
-    )
-
+    st.write(f"💬 Messages: {len(memory)}")
+    st.write("🧠 Memory Enabled")
+    st.write("⚡ Powered by Gemini")
 
 
 # ---------- HEADER ----------
 
-st.markdown(
-    """
-    <div class="title">
-    Welcome to AI Memory Chatbot 👋
-    </div>
+st.markdown("""
+<div class="title">
+Welcome to AI Memory Chatbot 👋
+</div>
 
-    <div class="subtitle">
-    Your conversations are remembered locally.
-    </div>
+<div class="subtitle">
+Your conversations are remembered locally.
+</div>
 
-    <br>
-    """,
-    unsafe_allow_html=True
-)
+<br>
+""", unsafe_allow_html=True)
 
-
-
-# ---------- INFO CARD ----------
 
 st.info(
-    "🧠 I remember your previous messages and use them to give better responses."
+    "🧠 I remember previous conversations until you clear the memory."
 )
 
 
-
-# ---------- CHAT DISPLAY ----------
+# ---------- DISPLAY CHAT ----------
 
 messages = get_memory()
-
 
 for msg in messages:
 
     if msg["role"] == "user":
 
-        st.markdown(
-            f"""
-            <div class="user-msg">
-            <b>You</b><br>
-            {msg["content"]}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        st.markdown(f"""
+        <div class="user-msg">
+        <b>You</b><br>
+        {msg["content"]}
+        </div>
+        """, unsafe_allow_html=True)
 
     else:
 
-        st.markdown(
-            f"""
-            <div class="bot-msg">
-            <b>AI Memory Chatbot</b><br>
-            {msg["content"]}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        st.markdown(f"""
+        <div class="bot-msg">
+        <b>AI Memory Chatbot</b><br>
+        {msg["content"]}
+        </div>
+        """, unsafe_allow_html=True)
 
 
+# ---------- USER INPUT ----------
 
-# ---------- INPUT ----------
-
-user_input = st.chat_input(
-    "Type your message here..."
-)
-
+user_input = st.chat_input("Type your message here...")
 
 
 if user_input:
 
-
-    add_message(
-        "user",
-        user_input
-    )
-
-
+    # Get history BEFORE adding current message
     history = get_memory()
-
 
     response = get_response(
         user_input,
         history
     )
 
-
-    add_message(
-        "assistant",
-        response
-    )
-
+    # Save conversation AFTER response
+    add_message("user", user_input)
+    add_message("assistant", response)
 
     st.rerun()

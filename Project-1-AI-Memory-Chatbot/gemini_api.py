@@ -2,9 +2,10 @@ from google import genai
 from dotenv import load_dotenv
 import os
 
-# Load API key
+# Load environment variables
 load_dotenv()
 
+# Create Gemini client
 client = genai.Client(
     api_key=os.getenv("API_KEY")
 )
@@ -12,23 +13,48 @@ client = genai.Client(
 
 def get_response(message, history=None):
     """
-    Send user message to Gemini and return response.
+    Generate a response from Gemini using previous conversation memory.
     """
 
     if history is None:
         history = []
 
-    prompt = ""
+    # Build prompt
+    if history:
+        prompt = (
+            "You are an intelligent AI Memory Chatbot.\n"
+            "Use the previous conversation below as context whenever it is relevant.\n\n"
+            "Previous Conversation:\n"
+        )
 
-    # Add previous conversation memory
-    for chat in history:
-        prompt += f"{chat['role']}: {chat['content']}\n"
+        for chat in history:
+            role = chat.get("role", "user")
+            content = chat.get("content", "")
+            prompt += f"{role}: {content}\n"
 
-    prompt += f"user: {message}"
+        prompt += f"\nCurrent User Message:\n{message}"
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
+    else:
+        prompt = (
+            "You are an intelligent AI assistant.\n"
+            "There is no previous conversation history because the memory is empty or has been cleared.\n\n"
+            f"Current User Message:\n{message}"
+        )
 
-    return response.text
+    try:
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+
+        if hasattr(response, "text") and response.text:
+            return response.text.strip()
+
+        return "I couldn't generate a response. Please try again."
+
+    except Exception as e:
+        return (
+            "⚠️ Sorry, I couldn't contact Gemini right now.\n\n"
+            f"Error: {str(e)}"
+        )
