@@ -14,6 +14,24 @@ https://aimemorychatbot.streamlit.app/
 📂 **Repository:**  
 https://github.com/yadavtanya717-dev/-DecodeLabs-Internship
 
+## 🎥 Demo Video
+
+Watch the complete project demonstration on YouTube:
+
+[![Watch the Demo](https://img.shields.io/badge/▶️-Watch%20Demo-red?style=for-the-badge&logo=youtube)](<https://youtu.be/sz0mnUZZWUQ>)
+
+Or click here:
+
+<https://youtu.be/sz0mnUZZWUQ>
+
+
+
+
+
+
+
+
+
 ---
 
 ## 📖 Project Overview
