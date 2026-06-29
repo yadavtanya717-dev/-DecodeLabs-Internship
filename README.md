@@ -19,7 +19,7 @@ An intelligent chatbot built using Python, Streamlit, and Google Gemini API that
 - JSON Memory
 - Git & GitHub
 
-🔗 Live Demo: *(Add your Streamlit link here)*
+🔗 Live Demo: *(https://aimemorychatbot.streamlit.app/)*
 
 📁 Folder: `Project-1-AI-Memory-Chatbot`
 
